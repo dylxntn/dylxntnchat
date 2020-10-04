@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require('express')
 const app = express()
 const server = require('http').Server(app)
@@ -26,4 +27,11 @@ io.on('connection', socket => {
   })
 })
 
-server.listen(3000)
+if (process.env.PROD) {
+  app.use(express.static(path.join(__dirname, './views')));
+  app.get('/', (req, res) => {
+      res.sendFile(path.join(__dirname, '.views/room.ejs'));
+  });
+}
+const port = process.env.PORT || 3000;
+server.listen(port, () => console.log(`the server is running on port ${port}`))
